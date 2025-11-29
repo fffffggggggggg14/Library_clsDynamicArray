@@ -1,0 +1,231 @@
+#pragma once
+#include <iostream>
+using namespace std;
+
+template <class t_c>
+class clsDynamicArray {
+    protected:
+        int _len = 0;
+        t_c* _arr = new t_c[_len];
+        t_c* _temp_arr;
+    
+    public:
+        clsDynamicArray(int len){
+            _len = len;
+        }
+
+        clsDynamicArray(){
+        }
+
+        ~clsDynamicArray(){
+            delete[] _arr;
+        }
+
+        void set(int index, t_c data){
+            if(index < 0){
+                index += _len;
+
+                if(index > -1){
+                    _arr[index] = data;
+                }
+                return;
+            }
+
+            if(index < _len){
+                _arr[index] = data;
+            }
+
+        }
+
+        void print(void){
+            for(int i = 0; i < _len; i++){
+                cout << _arr[i];
+                if(i != _len - 1){
+                    cout << " ";
+                }
+            }
+            cout << endl;
+        }
+
+
+        bool empty(void){
+            return !_len;
+        }
+
+        int len(void){
+            return _len;
+        }
+
+        void resize(int new_len){
+            if(new_len < 0){
+                new_len = 0;
+            }
+
+            if(new_len < _len){
+                _len = new_len;
+            }
+
+            _temp_arr = new t_c[_len];
+
+            for(int i = 0; i < _len; i++){
+                _temp_arr[i] = _arr[i];
+            }
+
+            _len = new_len;
+
+            delete[] _arr;
+            _arr = _temp_arr;
+        }
+
+
+        t_c get(int index){
+            if(index < 0){
+                index += _len;
+
+                if(index < 0){
+                    return _arr[index];
+                }
+            }
+
+            if(index < _len){
+                return _arr[index];
+            }
+        }
+
+
+        void reverse(void){
+            _temp_arr = new t_c[_len];
+
+            for(int i = 0; i < _len; i++){
+                _temp_arr[_len - 1 - i] = _arr[i];
+            }
+
+            delete[] _arr;
+            _arr = _temp_arr;
+        }
+
+
+        void cls(void){
+            _len = 0;
+            _temp_arr = new t_c[_len];
+            delete[] _arr;
+            _arr = _temp_arr;
+        }
+
+        bool del(int index){
+            if(index < 0){
+                index += _len;
+
+                if(index < 0){
+                    return false;
+                }
+            }
+
+            if(index >= _len){
+                return false;
+            }
+
+
+            _temp_arr = new t_c[_len - 1];
+
+            for(int i = 0; i < index; i++){
+                _temp_arr[i] = _arr[i];
+            }
+
+            index++;
+
+            for(int i = index; i < _len; i++){
+                _temp_arr[i - 1] = _arr[i];
+            }
+
+            _len -= 1;
+
+            delete[] _arr;
+            _arr = _temp_arr;
+
+            return true;
+        }
+
+        bool del_first(void){
+            return del(0);
+        }
+
+        bool del_last(void){
+            return del(_len - 1);
+        }
+
+        int find(t_c data){
+
+            for(int i = 0; i < _len; i++){
+                if(_arr[i] == data){
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        bool del_data(t_c data){
+            int index = find(data);
+            if(index != -1){
+                return del(index);
+            }
+
+            return false;
+        }
+
+        bool insert(int index, t_c data){
+            if(index < 0){
+                index += _len;
+
+                if(index < 0){
+                    return false;
+                }
+            }
+
+            if(index > _len){
+                return false;
+            }
+
+            _len++;
+
+            _temp_arr = new t_c[_len];
+
+            for(int i = 0; i < index; i++){
+                _temp_arr[i] = _arr[i];
+            }
+
+            _temp_arr[index] = data;
+            index++;
+
+            for(int i = index; i < _len; i++){
+                _temp_arr[i] = _arr[i - 1];
+            }
+
+            delete[] _arr;
+            _arr = _temp_arr;
+            return true;
+        }
+
+
+        bool insert_beginning(t_c data){
+            return insert(0, data);
+        }
+
+        bool insert_last(t_c data){
+            return insert(_len, data);
+        }
+
+        bool insert_after(int index, t_c data){
+            if(index == -1){
+                return insert(_len, data);
+            }
+            return insert(index + 1, data);
+        }
+
+        bool insert_before(int index, t_c data){
+            return insert(index, data);
+        }
+
+
+};
